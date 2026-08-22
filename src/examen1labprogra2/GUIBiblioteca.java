@@ -11,7 +11,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.util.Calendar;
+import java.util.List;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -232,10 +236,205 @@ public class GUIBiblioteca extends JFrame{
             }
         });
         
+        btnuserEst.addActionListener(e -> {
+            try {
+                Usuario user=new UsuarioEstandar(txtuserid.getText().trim(), txtusernombre.getText().trim());
+                service.registrarUsuario(user);
+                txtConsola.setText("Usuario Estandar registrado: "+user.getNombre());
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+
+        btnuserPrem.addActionListener(e -> {
+            try {
+                Usuario user=new UsuarioPremium(txtuserid.getText().trim(), txtusernombre.getText().trim());
+                service.registrarUsuario(user);
+                txtConsola.setText("Usuario Premium registrado: "+user.getNombre());
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+        
+        btnPrestar.addActionListener(e -> {
+            try {
+                Calendar fecha = obtenerFechaSimulada();
+                Prestamo p = service.prestarMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha);
+                txtConsola.setText("PRESTAMO EXITOSO:\n"
+                        + "Usuario: "+p.getUsuario().getNombre() + "\n"
+                        + "Material: "+p.getMaterial().getTitulo() + "\n"
+                        + "Fecha de prestamo: "+formatearFecha(p.getFechaPrestamo()) + "\n"
+                        + "Fecha prevista devolucion: "+formatearFecha(p.getFechaPrevistaDev()));
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+
+        btnDevolver.addActionListener(e -> {
+            try {
+                Calendar fecha = obtenerFechaSimulada();
+                service.devolverMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha);
+                txtConsola.setText("Devolucion efectuada correctamente en fecha: " + formatearFecha(fecha));
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+
+        
+        btnReservar.addActionListener(e -> {
+            try {
+                service.reservarMaterial(txtopuser.getText().trim(), txtopmat.getText().trim());
+                txtConsola.setText("Material reservado exitosamente para el usuario "+txtopuser.getText().trim());
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
         
         
+        
+        
+        btnVerMaterial.addActionListener(e -> {
+            MaterialBibliografico m = service.buscarMaterialExacto(txtcode.getText().trim(), 0);
+            if (m == null && !txtTitle.getText().trim().isEmpty()) {
+                m = service.buscarMaterialExacto(txtTitle.getText().trim(), 0);
+            }
+            if (m != null) {
+                cargarVisualMaterial(m);
+                txtConsola.setText("=== MATERIAL ENCONTRADO ===\n"
+                        + "Codigo: "+m.getCodigo()+"\n"
+                        + "Titulo: "+m.getTitulo()+"\n"
+                        + "Nivel Complejidad: "+m.getNivelComplejidad().name()+" (+"+m.getNivelComplejidad().getDiasExtra()+" dias)\n"
+                        + "Estado: "+m.getEstado() + "\n"
+                        + "Dias de Prestamo Calculados: "+m.calcularDiasPrestamo()+"\n"
+                        + "Descripcion: " + m.obtenerDescripcion()+"\n"
+                        + "Tiene reservas pendientes: "+(m.tieneReservasPendientes() ? "SI" : "NO"));
+            } else {
+                JOptionPane.showMessageDialog(this, "Material no encontrado.", "Busqueda", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
+        
+        
+        btnProximos.addActionListener(e -> {
+            Calendar fecha = obtenerFechaSimulada();
+            List<Prestamo> lista = service.obtenerProximosAVencer(fecha.getTime(), 3);
+            StringBuilder sb = new StringBuilder("=== PROXIMOS A VENCER (Margen 3 dias desde "+formatearFecha(fecha.getTime())+") ===\n");
+            for (Prestamo p : lista) {
+                sb.append("- Material: ").append(p.getMaterial().getTitulo()).append(" | Usuario: ").append(p.getUsuario().getNombre()).append(" | Vence: ").append(formatearFecha(p.getFechaPrevistaDev())).append("\n");
+            }
+            if (lista.isEmpty()) sb.append("No hay prestamos proximos a vencer.");
+            txtConsola.setText(sb.toString());
+        });
+        
+        
+        
+        
+        btnVen.addActionListener(e -> {
+            Calendar fecha = obtenerFechaSimulada();
+            List<Prestamo> lista = service.obtenerPendientesPenalizacion(fecha.getTime());
+            StringBuilder sb = new StringBuilder("=== PRESTAMOS VENCIDOS / PENDIENTES DE PENALIZACION (Ref: "+formatearFecha(fecha.getTime())+") ===\n");
+            for (Prestamo p : lista) {
+                sb.append("- Material: ").append(p.getMaterial().getTitulo()).append(" | Usuario: ").append(p.getUsuario().getNombre()).append(" | Vencio: ").append(formatearFecha(p.getFechaPrevistaDev())).append(" | Dias Retraso: ").append(p.CalcularDiasRetraso(fecha.getTime())).append("\n");
+            }
+            if (lista.isEmpty()){
+                sb.append("No hay prestamos vencidos pendientes.");
+            }
+            txtConsola.setText(sb.toString());
+        });
+        
+        
+        
+        
+        btnReporte.addActionListener(e -> {
+            StringBuilder sb = new StringBuilder("=== POLIMORFISMO REAL EN MATERIALES ===\n");
+            for (Prestable prestable : service.getMateriales()) {
+                MaterialBibliografico m = (MaterialBibliografico) prestable;
+                sb.append("[").append(m.getClass().getSimpleName()).append("] ").append(m.getTitulo()).append(" -> ").append(m.obtenerDescripcion()).append(" | Dias prestamo: ").append(m.calcularDiasPrestamo()).append("\n");
+            }
+            sb.append("\n=== FILTRO GENERICO (Solo Libros) ===\n");
+            List<Libro> soloLibros = service.filtrarPorTipo(Libro.class);
+            for (Libro l : soloLibros) {
+                sb.append("- ").append(l.getTitulo()).append(" (Autor: ").append(l.getAutor()).append(")\n");
+            }
+            txtConsola.setText(sb.toString());
+        });
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private String formatearFecha(java.util.Date d) {
+        if (d==null){
+            return "";
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        int dia= cal.get(Calendar.DAY_OF_MONTH);
+        int mes= cal.get(Calendar.MONTH)+1;
+        int anio= cal.get(Calendar.YEAR);
+        return dia+"/"+mes+"/"+anio;
+    }
+
+    private Calendar obtenerFechaSimulada() {
+        Calendar cal= Calendar.getInstance();
+        try {
+            int offset = Integer.parseInt(txtdias.getText().trim());
+            cal.add(Calendar.DAY_OF_YEAR,offset);
+        } 
+        catch (NumberFormatException ignored){}
+        
+        return cal;
+    }
+    
+    private void cargarVisualMaterial(MaterialBibliografico m) {
+        switch (m.getNivelComplejidad()) {
+            case BAJO:
+                lblcomp.setBackground(new Color(144,238,144));
+                lblcomp.setForeground(Color.BLACK);
+                break;
+            case MEDIO:
+                lblcomp.setBackground(new Color(255,215,0));
+                lblcomp.setForeground(Color.BLACK);
+                break;
+            case ALTO:
+                lblcomp.setBackground(new Color(230,80,80));
+                lblcomp.setForeground(Color.WHITE);
+                break;
+        }
+        
+        lblcomp.setText("COMPLEJIDAD: " + m.getNivelComplejidad().name());
+
+        String ruta=m.getRutaImagen();
+        if (ruta != null && !ruta.trim().isEmpty()) {
+            java.io.File f = new java.io.File(ruta);
+            if (f.exists() && !f.isDirectory()) {
+                ImageIcon icon = new ImageIcon(ruta);
+                Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                lblimg.setIcon(new ImageIcon(img));
+                lblimg.setText("");
+                return;
+            }
+        }
+        java.io.File fallback=new java.io.File("imagenes/no_image.png");
+        if (fallback.exists()) {
+            ImageIcon icon=new ImageIcon(fallback.getAbsolutePath());
+            Image img=icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            lblimg.setIcon(new ImageIcon(img));
+            lblimg.setText("");
+        } else {
+            lblimg.setIcon(null);
+            lblimg.setText("Sin Portada");
+        }
+    }
+
     
     private void mostrarError(Exception ex) {
         if (ex instanceof MaterialNoDisponibleException) {
