@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package examen1labprogra2;
 
 /**
@@ -10,22 +6,23 @@ package examen1labprogra2;
  * @author David Suazo Palao
  */
 public class UsuarioPremium extends Usuario {
-    public UsuarioPremium (String id, String nombre){
-        super(id,nombre);
+    public UsuarioPremium(String id, String nombre) {
+        super(id, nombre);
     }
-    
+
     @Override
-    public int getLimitePrestamos(){
+    public int getLimitePrestamos() {
         return 10;
     }
-    
+
     @Override
-    public boolean AccedeaComplejidad(NivelComplejidad nivel){
+    public boolean AccedeaComplejidad(NivelComplejidad nivel) {
+        // El usuario Premium tiene acceso a todos los niveles, incluido ALTO
         return true;
     }
-    
+
     @Override
-    public String getTipoPerfil(){
+    public String getTipoPerfil() {
         return "Premium";
     }
 }

@@ -3,6 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package examen1labprogra2;
 
 import java.awt.BorderLayout;
@@ -12,6 +17,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.CardLayout;
+import java.awt.Cursor;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -40,26 +51,123 @@ public class GUIBiblioteca extends JFrame {
     private JLabel lblimg, lblcomp;
     private JTextArea txtConsola;
 
+    // Panel raíz con CardLayout: pantalla de Bienvenida <-> Aplicación principal
+    private final CardLayout cardLayout = new CardLayout();
+    private final JPanel cards = new JPanel(cardLayout);
+    private static final String CARD_BIENVENIDA = "BIENVENIDA";
+    private static final String CARD_APP = "APP";
+
     public GUIBiblioteca(BibliotecaServicio service) {
         this.service = service;
         setTitle("Sistema de Gestión de Biblioteca");
-        
+
         // Tamaño compacto y centrado
-        setSize(1050, 720);
+        setSize(1080, 740);
         setMinimumSize(new Dimension(1000, 680));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout(8, 8));
 
-        // ================= PANEL IZQUIERDO (FORMULARIOS) =================
-        JPanel panel_izq = new JPanel();
-        panel_izq.setLayout(new javax.swing.BoxLayout(panel_izq, javax.swing.BoxLayout.Y_AXIS));
-        panel_izq.setPreferredSize(new Dimension(500, 0));
-        panel_izq.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        cards.add(construirPantallaBienvenida(), CARD_BIENVENIDA);
+        cards.add(construirPantallaApp(), CARD_APP);
+        setContentPane(cards);
+        cardLayout.show(cards, CARD_BIENVENIDA);
+    }
+
+    // ================================================================
+    // ================= PANTALLA DE BIENVENIDA =======================
+    // ================================================================
+    private JPanel construirPantallaBienvenida() {
+        Color azulOscuro = new Color(25, 42, 74);
+        Color azulAcento = new Color(64, 116, 191);
+        Color textoClaro = new Color(235, 240, 248);
+
+        JPanel fondo = new JPanel(new GridBagLayout());
+        fondo.setBackground(azulOscuro);
+
+        JPanel tarjeta = new JPanel(new GridBagLayout());
+        tarjeta.setBackground(new Color(35, 55, 92));
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(azulAcento, 2, true),
+                BorderFactory.createEmptyBorder(40, 60, 40, 60)));
+
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.gridx = 0;
+        gc.insets = new Insets(8, 0, 8, 0);
+        gc.gridy = 0;
+
+        JLabel lblIcono = new JLabel("\uD83D\uDCDA", SwingConstants.CENTER);
+        lblIcono.setFont(new Font("SansSerif", Font.PLAIN, 64));
+        tarjeta.add(lblIcono, gc);
+
+        gc.gridy++;
+        JLabel lblTitulo = new JLabel("Bienvenido a la Biblioteca");
+        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+        lblTitulo.setForeground(textoClaro);
+        tarjeta.add(lblTitulo, gc);
+
+        gc.gridy++;
+        JLabel lblSubtitulo = new JLabel("Sistema de Gestión de Materiales, Usuarios y Préstamos");
+        lblSubtitulo.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        lblSubtitulo.setForeground(new Color(190, 205, 225));
+        tarjeta.add(lblSubtitulo, gc);
+
+        gc.gridy++;
+        gc.insets = new Insets(28, 0, 8, 0);
+        JButton btnIngresar = new JButton("Ingresar al Sistema  \u2192");
+        btnIngresar.setFont(new Font("SansSerif", Font.BOLD, 16));
+        btnIngresar.setBackground(azulAcento);
+        btnIngresar.setForeground(Color.WHITE);
+        btnIngresar.setFocusPainted(false);
+        btnIngresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnIngresar.setBorder(BorderFactory.createEmptyBorder(12, 30, 12, 30));
+        btnIngresar.addActionListener(e -> cardLayout.show(cards, CARD_APP));
+        tarjeta.add(btnIngresar, gc);
+
+        gc.gridy++;
+        gc.insets = new Insets(20, 0, 0, 0);
+        JLabel lblCreditos = new JLabel("David Suazo Palao · Ian Suazo Palao");
+        lblCreditos.setFont(new Font("SansSerif", Font.ITALIC, 12));
+        lblCreditos.setForeground(new Color(150, 165, 190));
+        tarjeta.add(lblCreditos, gc);
+
+        GridBagConstraints gcFondo = new GridBagConstraints();
+        fondo.add(tarjeta, gcFondo);
+
+        return fondo;
+    }
+
+    // ================================================================
+    // ================= PANTALLA PRINCIPAL (APP) ======================
+    // ================================================================
+    private JPanel construirPantallaApp() {
+        JPanel raiz = new JPanel(new BorderLayout(8, 8));
+        raiz.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+
+        // ---- Barra superior con botón para volver al menú de bienvenida ----
+        JPanel barraSuperior = new JPanel(new BorderLayout());
+        barraSuperior.setBackground(new Color(25, 42, 74));
+        barraSuperior.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+
+        JLabel lblTituloApp = new JLabel("\uD83D\uDCDA  Sistema de Gestión de Biblioteca");
+        lblTituloApp.setFont(new Font("SansSerif", Font.BOLD, 16));
+        lblTituloApp.setForeground(Color.WHITE);
+        barraSuperior.add(lblTituloApp, BorderLayout.WEST);
+
+        JButton btnMenu = new JButton("\u2190 Menú Principal");
+        btnMenu.setFocusPainted(false);
+        btnMenu.addActionListener(e -> cardLayout.show(cards, CARD_BIENVENIDA));
+        barraSuperior.add(btnMenu, BorderLayout.EAST);
+
+        raiz.add(barraSuperior, BorderLayout.NORTH);
+
+        // ================= PANEL IZQUIERDO (FORMULARIOS EN PESTAÑAS) =================
+        JTabbedPane tabsIzq = new JTabbedPane();
+        tabsIzq.setPreferredSize(new Dimension(500, 0));
+        tabsIzq.setFont(new Font("SansSerif", Font.BOLD, 13));
 
         // 1. Panel Material
         JPanel p_material = new JPanel(new BorderLayout(4, 4));
-        p_material.setBorder(BorderFactory.createTitledBorder("Alta / Consulta del Material"));
+        p_material.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel p_mat_grid = new JPanel(new GridLayout(6, 2, 4, 4));
         txtcode = new JTextField();
@@ -99,7 +207,7 @@ public class GUIBiblioteca extends JFrame {
 
         // 2. Panel Usuario
         JPanel p_usuario = new JPanel(new BorderLayout(4, 4));
-        p_usuario.setBorder(BorderFactory.createTitledBorder("Alta de Usuarios"));
+        p_usuario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel p_user_grid = new JPanel(new GridLayout(2, 2, 4, 4));
         txtuserid = new JTextField();
@@ -115,12 +223,15 @@ public class GUIBiblioteca extends JFrame {
         p_user_botones.add(btnuserEst);
         p_user_botones.add(btnuserPrem);
 
-        p_usuario.add(p_user_grid, BorderLayout.CENTER);
+        JPanel p_user_top = new JPanel(new BorderLayout());
+        p_user_top.add(p_user_grid, BorderLayout.NORTH);
+
+        p_usuario.add(p_user_top, BorderLayout.CENTER);
         p_usuario.add(p_user_botones, BorderLayout.SOUTH);
 
         // 3. Panel Operaciones y Reportes
         JPanel p_operations = new JPanel(new BorderLayout(4, 4));
-        p_operations.setBorder(BorderFactory.createTitledBorder("Operaciones, Simulación y Seguimiento"));
+        p_operations.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel p_op_grid = new JPanel(new GridLayout(3, 2, 4, 4));
         txtopuser = new JTextField();
@@ -155,12 +266,15 @@ public class GUIBiblioteca extends JFrame {
         p_op_botones_contenedor.add(p_btn_fila1);
         p_op_botones_contenedor.add(p_btn_fila2);
 
-        p_operations.add(p_op_grid, BorderLayout.CENTER);
+        JPanel p_op_top = new JPanel(new BorderLayout());
+        p_op_top.add(p_op_grid, BorderLayout.NORTH);
+
+        p_operations.add(p_op_top, BorderLayout.CENTER);
         p_operations.add(p_op_botones_contenedor, BorderLayout.SOUTH);
 
-        panel_izq.add(p_material);
-        panel_izq.add(p_usuario);
-        panel_izq.add(p_operations);
+        tabsIzq.addTab("  Materiales  ", p_material);
+        tabsIzq.addTab("  Usuarios  ", p_usuario);
+        tabsIzq.addTab("  Operaciones  ", p_operations);
 
         // ================= PANEL DERECHO (VISTA DE PORTADA Y CONSOLA) =================
         JPanel panel_der = new JPanel(new BorderLayout(6, 6));
@@ -169,16 +283,18 @@ public class GUIBiblioteca extends JFrame {
         // Tarjeta visual compacta de la portada
         JPanel p_visual = new JPanel(new BorderLayout(4, 4));
         p_visual.setBorder(BorderFactory.createTitledBorder("Detalle del Material Seleccionado"));
-        
+
         lblcomp = new JLabel("COMPLEJIDAD", SwingConstants.CENTER);
         lblcomp.setOpaque(true);
         lblcomp.setBackground(Color.LIGHT_GRAY);
         lblcomp.setFont(new Font("SansSerif", Font.BOLD, 12));
         lblcomp.setPreferredSize(new Dimension(0, 24));
-        
+
         lblimg = new JLabel("Sin Portada Seleccionada", SwingConstants.CENTER);
         lblimg.setPreferredSize(new Dimension(140, 160));
         lblimg.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        lblimg.setHorizontalTextPosition(SwingConstants.CENTER);
+        lblimg.setVerticalTextPosition(SwingConstants.CENTER);
 
         p_visual.add(lblcomp, BorderLayout.NORTH);
         p_visual.add(lblimg, BorderLayout.CENTER);
@@ -193,8 +309,8 @@ public class GUIBiblioteca extends JFrame {
         panel_der.add(p_visual, BorderLayout.NORTH);
         panel_der.add(scrollConsola, BorderLayout.CENTER);
 
-        add(panel_izq, BorderLayout.WEST);
-        add(panel_der, BorderLayout.CENTER);
+        raiz.add(tabsIzq, BorderLayout.WEST);
+        raiz.add(panel_der, BorderLayout.CENTER);
 
         // ================= EVENTOS DE LOS BOTONES =================
 
@@ -364,7 +480,41 @@ public class GUIBiblioteca extends JFrame {
             } catch (Exception ex) {
                 mostrarError(ex);
             }
-        });      
+        });
+
+        btnProximos.addActionListener(e -> {
+            StringBuilder sb = new StringBuilder("=== PRÉSTAMOS PRÓXIMOS A VENCER ===\n\n");
+            Date hoy = obtenerFechaSimulada().getTime();
+            boolean hay = false;
+            for (Prestamo p : service.getPrestamos()) {
+                if (!p.isDevuelto() && !p.estaVencido(hoy)) {
+                    sb.append("• [").append(p.getMaterial().getCodigo()).append("] ").append(p.getMaterial().getTitulo())
+                      .append(" - Usuario: ").append(p.getUsuario().getNombre())
+                      .append(" - Vence: ").append(formatearFecha(p.getFechaPrevistaDev())).append("\n");
+                    hay = true;
+                }
+            }
+            if (!hay) sb.append("No hay préstamos activos próximos a vencer.");
+            txtConsola.setText(sb.toString());
+        });
+
+        btnVencidos.addActionListener(e -> {
+            StringBuilder sb = new StringBuilder("=== PRÉSTAMOS VENCIDOS ===\n\n");
+            Date hoy = obtenerFechaSimulada().getTime();
+            boolean hay = false;
+            for (Prestamo p : service.getPrestamos()) {
+                if (!p.isDevuelto() && p.estaVencido(hoy)) {
+                    sb.append("• [").append(p.getMaterial().getCodigo()).append("] ").append(p.getMaterial().getTitulo())
+                      .append(" - Usuario: ").append(p.getUsuario().getNombre())
+                      .append(" - Días de retraso: ").append(p.CalcularDiasRetraso(hoy)).append("\n");
+                    hay = true;
+                }
+            }
+            if (!hay) sb.append("No hay préstamos vencidos.");
+            txtConsola.setText(sb.toString());
+        });
+
+        return raiz;
     }
 
     private String formatearFecha(Date d) {
@@ -386,11 +536,11 @@ public class GUIBiblioteca extends JFrame {
         return cal;
     }
 
-    // CARGA DE IMAGEN PROPORCIONADA Y COMPATIBLE CON JAVA 8
+    // CARGA DE IMAGEN — prueba varias ubicaciones posibles para que funcione
+    // sin importar dónde haya quedado la carpeta "Portadas" dentro del proyecto.
     private void cargarVisualMaterial(MaterialBibliografico m) {
         if (m == null) return;
 
-        // Configuración de colores compatible con Java 8
         if (m.getNivelComplejidad() == NivelComplejidad.BAJO) {
             lblcomp.setBackground(new Color(170, 240, 170));
             lblcomp.setForeground(Color.BLACK);
@@ -405,24 +555,7 @@ public class GUIBiblioteca extends JFrame {
         lblcomp.setText("COMPLEJIDAD: " + m.getNivelComplejidad().name());
 
         String ruta = m.getRutaImagen();
-        Image img = null;
-
-        if (ruta != null && !ruta.trim().isEmpty()) {
-            File fDirect = new File(ruta);
-            if (fDirect.exists() && fDirect.isFile()) {
-                img = new ImageIcon(fDirect.getAbsolutePath()).getImage();
-            } else {
-                File fSrc = new File("src/" + ruta);
-                if (fSrc.exists() && fSrc.isFile()) {
-                    img = new ImageIcon(fSrc.getAbsolutePath()).getImage();
-                } else {
-                    URL url = getClass().getClassLoader().getResource(ruta);
-                    if (url != null) {
-                        img = new ImageIcon(url).getImage();
-                    }
-                }
-            }
-        }
+        Image img = buscarImagen(ruta);
 
         if (img != null) {
             Image scaled = img.getScaledInstance(130, 160, Image.SCALE_SMOOTH);
@@ -432,6 +565,60 @@ public class GUIBiblioteca extends JFrame {
             lblimg.setIcon(null);
             lblimg.setText("<html><center><b>[Sin Portada]</b><br><small>(" + (ruta != null ? ruta : "N/A") + ")</small></center></html>");
         }
+    }
+
+    /**
+     * Busca la imagen probando, en orden, las ubicaciones más comunes en un
+     * proyecto NetBeans: ruta literal, dentro de src/, dentro del paquete
+     * examen1labprogra2/, y como recurso del classpath (con y sin el
+     * paquete). Basta con que la carpeta "Portadas" quede en CUALQUIERA de
+     * estos lugares para que la imagen aparezca.
+     */
+    private Image buscarImagen(String ruta) {
+        if (ruta == null || ruta.trim().isEmpty()) {
+            return null;
+        }
+        ruta = ruta.trim().replace('\\', '/');
+
+        // 1. Ruta literal (absoluta o relativa al directorio de ejecución)
+        File f = new File(ruta);
+        if (f.exists() && f.isFile()) {
+            return new ImageIcon(f.getAbsolutePath()).getImage();
+        }
+
+        // 2. Dentro de src/
+        f = new File("src/" + ruta);
+        if (f.exists() && f.isFile()) {
+            return new ImageIcon(f.getAbsolutePath()).getImage();
+        }
+
+        // 3. Dentro de src/examen1labprogra2/ (si la pusieron junto a las clases)
+        f = new File("src/examen1labprogra2/" + ruta);
+        if (f.exists() && f.isFile()) {
+            return new ImageIcon(f.getAbsolutePath()).getImage();
+        }
+
+        // 4. Como recurso del classpath, tal cual (funciona si "Portadas"
+        //    está directamente bajo src/, ya que NetBeans lo copia al build)
+        URL url = getClass().getClassLoader().getResource(ruta);
+        if (url != null) {
+            return new ImageIcon(url).getImage();
+        }
+
+        // 5. Como recurso del classpath, con el paquete al frente
+        url = getClass().getClassLoader().getResource("examen1labprogra2/" + ruta);
+        if (url != null) {
+            return new ImageIcon(url).getImage();
+        }
+
+        // 6. Relativo al paquete de esta clase (getClass().getResource sin
+        //    "/" inicial busca dentro de examen1labprogra2/)
+        url = getClass().getResource(ruta);
+        if (url != null) {
+            return new ImageIcon(url).getImage();
+        }
+
+        return null;
     }
 
     private void mostrarError(Exception ex) {
