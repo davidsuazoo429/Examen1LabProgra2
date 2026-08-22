@@ -82,10 +82,12 @@ public class GUIBiblioteca extends JFrame{
         
         
         JPanel p_btnmaterial=new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+        JButton btnFiltrarNivel = new JButton("Filtrar x Nivel");
         JButton btnAddLibro=new JButton("+ Libro");
         JButton btnAddRevista=new JButton("+ Revista");
         JButton btnAddAudio=new JButton("+ Audiovisual");
         JButton btnVerMaterial=new JButton("Buscar / Ver");
+        p_btnmaterial.add(btnFiltrarNivel);
         p_btnmaterial.add(btnAddLibro);
         p_btnmaterial.add(btnAddRevista);
         p_btnmaterial.add(btnAddAudio);
@@ -123,12 +125,14 @@ public class GUIBiblioteca extends JFrame{
         
         
         JPanel p_btnoperations=new JPanel(new FlowLayout(FlowLayout.CENTER,2,2));
+        JButton btnconsult=new JButton("Penalizacion");
         JButton btnPrestar=new JButton("Prestar");
         JButton btnDevolver=new JButton("Devolver");
         JButton btnReservar=new JButton("Reservar");
         p_btnoperations.add(btnPrestar);
         p_btnoperations.add(btnDevolver);
         p_btnoperations.add(btnReservar);
+        p_btnoperations.add(btnconsult);
         
         
         
@@ -259,7 +263,7 @@ public class GUIBiblioteca extends JFrame{
         btnPrestar.addActionListener(e -> {
             try {
                 Calendar fecha = obtenerFechaSimulada();
-                Prestamo p = service.prestarMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha);
+                Prestamo p = service.prestarMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha.getTime());
                 txtConsola.setText("PRESTAMO EXITOSO:\n"
                         + "Usuario: "+p.getUsuario().getNombre() + "\n"
                         + "Material: "+p.getMaterial().getTitulo() + "\n"
@@ -309,7 +313,7 @@ public class GUIBiblioteca extends JFrame{
                         + "Descripcion: " + m.obtenerDescripcion()+"\n"
                         + "Tiene reservas pendientes: "+(m.tieneReservasPendientes() ? "SI" : "NO"));
             } 
-            else {
+         else {
                 JOptionPane.showMessageDialog(this, "Material no encontrado.", "Busqueda", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -359,15 +363,41 @@ public class GUIBiblioteca extends JFrame{
             }
             txtConsola.setText(sb.toString());
         });
+        
+        btnconsult.addActionListener(e -> {
+            try {
+                Calendar fecha = obtenerFechaSimulada();
+                Usuario u = service.buscarUsuarioPorId(txtopuser.getText().trim());
+                if (u==null) {
+                    JOptionPane.showMessageDialog(this, "Usuario no encontrado.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                long diasRetraso= service.calcularDiasPenalizacionRecursivo(u.getHistorialPrestamo(), 0, fecha.getTime());
+                boolean penalizado= u.estaPenalizado(fecha.getTime());
+                txtConsola.setText("=== ESTADO DE PENALIZACION ===\n"
+                        +"Usuario: "+u.getNombre()+" (" + u.getId()+")\n"
+                        +"Esta penalizado hoy?: "+(penalizado ? "SI" : "NO")+"\n"
+                        +"Dias de retraso historicos (Calculo Recursivo): "+diasRetraso);
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+        
+        btnFiltrarNivel.addActionListener(e -> {
+            try {
+                NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
+                List<MaterialBibliografico> lista = service.buscarMaterialFlexible(nivel, 0, new java.util.ArrayList<>());
+                StringBuilder sb=new StringBuilder("==MATERIALES DE NIVEL " + nivel.name()+" ==\n");
+                for (MaterialBibliografico m : lista) {
+                    sb.append("[").append(m.getCodigo()).append("] ").append(m.getTitulo()).append(" - Estado: ").append(m.getEstado()).append("\n");
+                }
+                if (lista.isEmpty()) sb.append("No hay materiales con ese nivel.");
+                txtConsola.setText(sb.toString());
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
     }
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
