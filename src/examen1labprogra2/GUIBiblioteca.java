@@ -183,8 +183,6 @@ public class GUIBiblioteca extends JFrame {
         p_mat_grid.add(txtTitle);
         p_mat_grid.add(new JLabel(" Nivel (BAJO, MEDIO, ALTO):"));
         p_mat_grid.add(txtnivel);
-        p_mat_grid.add(new JLabel(" Ruta Imagen:"));
-        p_mat_grid.add(txtimg);
         p_mat_grid.add(new JLabel(" Extra 1 (Autor/Edición/Min):"));
         p_mat_grid.add(txtextra1);
         p_mat_grid.add(new JLabel(" Extra 2 (Pág,ISBN/Frec/Formato):"));
@@ -257,12 +255,7 @@ public class GUIBiblioteca extends JFrame {
 
         JPanel p_btn_fila2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 2));
         JButton btnReporte = new JButton("Polimorfismo");
-        JButton btnProximos = new JButton("Próx. a Vencer");
-        JButton btnVencidos = new JButton("Préstamos Vencidos");
         p_btn_fila2.add(btnReporte);
-        p_btn_fila2.add(btnProximos);
-        p_btn_fila2.add(btnVencidos);
-
         p_op_botones_contenedor.add(p_btn_fila1);
         p_op_botones_contenedor.add(p_btn_fila2);
 
@@ -480,38 +473,6 @@ public class GUIBiblioteca extends JFrame {
             } catch (Exception ex) {
                 mostrarError(ex);
             }
-        });
-
-        btnProximos.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("=== PRÉSTAMOS PRÓXIMOS A VENCER ===\n\n");
-            Date hoy = obtenerFechaSimulada().getTime();
-            boolean hay = false;
-            for (Prestamo p : service.getPrestamos()) {
-                if (!p.isDevuelto() && !p.estaVencido(hoy)) {
-                    sb.append("• [").append(p.getMaterial().getCodigo()).append("] ").append(p.getMaterial().getTitulo())
-                      .append(" - Usuario: ").append(p.getUsuario().getNombre())
-                      .append(" - Vence: ").append(formatearFecha(p.getFechaPrevistaDev())).append("\n");
-                    hay = true;
-                }
-            }
-            if (!hay) sb.append("No hay préstamos activos próximos a vencer.");
-            txtConsola.setText(sb.toString());
-        });
-
-        btnVencidos.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("=== PRÉSTAMOS VENCIDOS ===\n\n");
-            Date hoy = obtenerFechaSimulada().getTime();
-            boolean hay = false;
-            for (Prestamo p : service.getPrestamos()) {
-                if (!p.isDevuelto() && p.estaVencido(hoy)) {
-                    sb.append("• [").append(p.getMaterial().getCodigo()).append("] ").append(p.getMaterial().getTitulo())
-                      .append(" - Usuario: ").append(p.getUsuario().getNombre())
-                      .append(" - Días de retraso: ").append(p.CalcularDiasRetraso(hoy)).append("\n");
-                    hay = true;
-                }
-            }
-            if (!hay) sb.append("No hay préstamos vencidos.");
-            txtConsola.setText(sb.toString());
         });
 
         return raiz;
