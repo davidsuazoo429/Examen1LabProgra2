@@ -6,16 +6,20 @@
 package examen1labprogra2;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -24,7 +28,7 @@ import javax.swing.JTextField;
 public class GUIBiblioteca extends JFrame{
     private final Service service;
     private JTextField txtcode, txtTitle, txtnivel,txtimg,txtextra1,txtextra2,txtuserid,txtusernombre,txtopuser,txtopmat,txtdias;
-    private JLabel lblimg, lblComplejidad;
+    private JLabel lblimg, lblcomp;
     private JTextArea txtConsola;
 
     public GUIBiblioteca(Service service) {
@@ -153,6 +157,31 @@ public class GUIBiblioteca extends JFrame{
         panel_izq.add(p_material);
         panel_izq.add(p_usuario);
         panel_izq.add(p_operations);
+        
+        
+        
+        
+        JPanel panel_der=new JPanel(new BorderLayout(5, 5));
+        panel_der.setBorder(BorderFactory.createTitledBorder("Vista de Material y Resultados"));
+        JPanel p_visual=new JPanel(new BorderLayout(5, 5));
+        lblcomp=new JLabel("COMPLEJIDAD", SwingConstants.CENTER);
+        lblcomp.setOpaque(true);
+        lblcomp.setBackground(Color.LIGHT_GRAY);
+        lblcomp.setFont(new Font("SansSerif",Font.BOLD,12));
+        lblcomp.setPreferredSize(new Dimension(0,25));
+        lblimg=new JLabel("Sin Imagen", SwingConstants.CENTER);
+        lblimg.setPreferredSize(new Dimension(160, 160));
+        lblimg.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        p_visual.add(lblcomp, BorderLayout.NORTH);
+        p_visual.add(lblimg, BorderLayout.CENTER);
+        txtConsola = new JTextArea();
+        txtConsola.setEditable(false);
+        txtConsola.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        panel_der.add(p_visual, BorderLayout.NORTH);
+        panel_der.add(new JScrollPane(txtConsola), BorderLayout.CENTER);
+        add(panel_izq, BorderLayout.WEST);
+        add(panel_der, BorderLayout.CENTER);
     }
     
     
