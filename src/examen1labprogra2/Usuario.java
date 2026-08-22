@@ -17,15 +17,15 @@ import java.util.Calendar;
 public abstract class Usuario {
     private String id;
     private String nombre;
-    private List<Material> materialPrestado;
+    private List<MaterialBibliografico> materialPrestado;
     private List<Prestamo> historialPrestamo;
     private Date finPenalizacion;
     
     public Usuario(String id, String nombre){
         this.id=id;
         this.nombre=nombre;
-        this.materialPrestado=materialPrestado;
-        this.historialPrestamo=historialPrestamo;
+        this.materialPrestado=new ArrayList<>();
+        this.historialPrestamo=new ArrayList<>();
         this.finPenalizacion=finPenalizacion;
     }
     
@@ -56,7 +56,7 @@ public abstract class Usuario {
     public String getNombre(){
         return nombre;
     }
-    public List<Material> getMaterialesPrestado(){
+    public List<MaterialBibliografico> getMaterialesPrestado(){
         return materialPrestado;
     }
     public List<Prestamo> getHistorialPrestamo(){

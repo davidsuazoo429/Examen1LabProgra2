@@ -21,7 +21,7 @@ public class UsuarioEstandar extends Usuario {
     
     @Override 
     public boolean AccedeaComplejidad(NivelComplejidad nivel){
-        return !nivel.requiereAutorizacion();
+        return !nivel.requiereAutorizacionEspecial();
     }
     
     @Override
