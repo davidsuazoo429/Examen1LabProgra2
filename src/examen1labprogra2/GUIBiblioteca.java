@@ -273,7 +273,7 @@ public class GUIBiblioteca extends JFrame{
         btnDevolver.addActionListener(e -> {
             try {
                 Calendar fecha = obtenerFechaSimulada();
-                service.devolverMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha.getTime());
+                service.devolverMaterial(txtopuser.getText().trim(),fecha.getTime());
                 txtConsola.setText("Devolucion efectuada correctamente en fecha: "+formatearFecha(fecha.getTime()));
             } catch (Exception ex) {
                 mostrarError(ex);
