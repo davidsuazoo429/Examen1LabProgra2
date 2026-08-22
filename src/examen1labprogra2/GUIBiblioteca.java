@@ -182,6 +182,54 @@ public class GUIBiblioteca extends JFrame{
         panel_der.add(new JScrollPane(txtConsola), BorderLayout.CENTER);
         add(panel_izq, BorderLayout.WEST);
         add(panel_der, BorderLayout.CENTER);
+        
+        
+        
+        //actionlistener para TODOS LOS BOTONES
+        
+        
+        
+        btnAddLibro.addActionListener(e -> {
+            try {
+                NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
+                String[] datos= txtextra2.getText().split(",");
+                
+                int pagina=(datos.length > 0 && !datos[0].trim().isEmpty() ? Integer.parseInt(datos[0].trim()) : 100);
+                String ISBN=(datos.length > 1 ? datos[1].trim() : "SIN-ISBN");
+                MaterialBibliografico m = new Libro(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), txtextra1.getText().trim(),pagina,ISBN);
+                
+                service.registrarMaterial(m);
+                txtConsola.setText("Libro registrado con exito: "+m.getTitulo());
+                
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+        
+        btnAddRevista.addActionListener(e -> {
+            try {
+                NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
+                int edicion = Integer.parseInt(txtextra1.getText().trim());
+                MaterialBibliografico m = new Revista(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), edicion, txtextra2.getText().trim());
+                service.registrarMaterial(m);
+                
+                txtConsola.setText("Revista registrada con exito: "+m.getTitulo());
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
+        
+        btnAddAudio.addActionListener(e -> {
+            try {
+                NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
+                int duracion = Integer.parseInt(txtextra1.getText().trim());
+                MaterialBibliografico m = new Audiovisual(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), duracion, txtextra2.getText().trim());
+                service.registrarMaterial(m);
+                txtConsola.setText("Material Audiovisual registrado con exito: "+m.getTitulo());
+            } catch (Exception ex) {
+                mostrarError(ex);
+            }
+        });
     }
     
     
