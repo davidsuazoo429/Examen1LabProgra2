@@ -12,7 +12,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -28,219 +32,219 @@ import javax.swing.SwingConstants;
 
 /**
  *
- * @author Ian Suazo Palao
+ * @author David Suazo Palao / Ian Suazo Palao
  */
-public class GUIBiblioteca extends JFrame{
+public class GUIBiblioteca extends JFrame {
     private final BibliotecaServicio service;
-    private JTextField txtcode, txtTitle, txtnivel,txtimg,txtextra1,txtextra2,txtuserid,txtusernombre,txtopuser,txtopmat,txtdias;
+    private JTextField txtcode, txtTitle, txtnivel, txtimg, txtextra1, txtextra2, txtuserid, txtusernombre, txtopuser, txtopmat, txtdias;
     private JLabel lblimg, lblcomp;
     private JTextArea txtConsola;
 
     public GUIBiblioteca(BibliotecaServicio service) {
         this.service = service;
-        setTitle("Sistema de Biblioteca: Panel Principal");
-        setSize(950, 650);
+        setTitle("Sistema de Gestión de Biblioteca");
+        
+        // Tamaño compacto y centrado
+        setSize(1050, 720);
+        setMinimumSize(new Dimension(1000, 680));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(8, 8));
-        
-        
-        
-        
-        JPanel panel_izq=new JPanel(new GridLayout(3,1,5,5));
-        JPanel p_material=new JPanel(new GridLayout(7,2,3,3));
-        panel_izq.setPreferredSize(new Dimension(420,0));
+
+        // ================= PANEL IZQUIERDO (FORMULARIOS) =================
+        JPanel panel_izq = new JPanel();
+        panel_izq.setLayout(new javax.swing.BoxLayout(panel_izq, javax.swing.BoxLayout.Y_AXIS));
+        panel_izq.setPreferredSize(new Dimension(500, 0));
+        panel_izq.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+
+        // 1. Panel Material
+        JPanel p_material = new JPanel(new BorderLayout(4, 4));
         p_material.setBorder(BorderFactory.createTitledBorder("Alta / Consulta del Material"));
-        
-        
-        
-        txtcode=new JTextField();
-        txtTitle=new JTextField();
-        txtnivel=new JTextField("BAJO");
-        txtimg=new JTextField("imagenes/libro1.jpg");
-        txtextra1=new JTextField();
-        txtextra2=new JTextField();
-        
-        
-        
-        
-        p_material.add(new JLabel("Codigo:"));
-        p_material.add(txtcode);
-        p_material.add(new JLabel("Titulo:"));
-        p_material.add(txtTitle);
-        p_material.add(new JLabel("Nivel (Bajo, Medio, Alto):"));
-        p_material.add(txtnivel);
-        p_material.add(new JLabel("Ruta Imagen:"));
-        p_material.add(txtimg);
-        p_material.add(new JLabel("Extra 1 (Autor, Edicion, Duracion en Min"));
-        p_material.add(txtextra1);
-        p_material.add(new JLabel("Extra 2 (Pag-ISBN, Periodicidad, Formato):"));
-        p_material.add(txtextra2);
-        
-        
-        
-        
-        
-        JPanel p_btnmaterial=new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
-        JButton btnFiltrarNivel = new JButton("Filtrar x Nivel");
-        JButton btnAddLibro=new JButton("+ Libro");
-        JButton btnAddRevista=new JButton("+ Revista");
-        JButton btnAddAudio=new JButton("+ Audiovisual");
-        JButton btnVerMaterial=new JButton("Buscar / Ver");
-        p_btnmaterial.add(btnFiltrarNivel);
-        p_btnmaterial.add(btnAddLibro);
-        p_btnmaterial.add(btnAddRevista);
-        p_btnmaterial.add(btnAddAudio);
-        p_btnmaterial.add(btnVerMaterial);
-        p_material.add(new JLabel("Acciones:"));
-        p_material.add(p_btnmaterial);
-        
-        
-        
-        JPanel p_usuario=new JPanel(new GridLayout(3,2,3,3));
+
+        JPanel p_mat_grid = new JPanel(new GridLayout(6, 2, 4, 4));
+        txtcode = new JTextField();
+        txtTitle = new JTextField();
+        txtnivel = new JTextField("BAJO");
+        txtimg = new JTextField("Portadas/LaDivinaComedia.jpg");
+        txtextra1 = new JTextField();
+        txtextra2 = new JTextField();
+
+        p_mat_grid.add(new JLabel(" Código:"));
+        p_mat_grid.add(txtcode);
+        p_mat_grid.add(new JLabel(" Título:"));
+        p_mat_grid.add(txtTitle);
+        p_mat_grid.add(new JLabel(" Nivel (BAJO, MEDIO, ALTO):"));
+        p_mat_grid.add(txtnivel);
+        p_mat_grid.add(new JLabel(" Ruta Imagen:"));
+        p_mat_grid.add(txtimg);
+        p_mat_grid.add(new JLabel(" Extra 1 (Autor/Edición/Min):"));
+        p_mat_grid.add(txtextra1);
+        p_mat_grid.add(new JLabel(" Extra 2 (Pág,ISBN/Frec/Formato):"));
+        p_mat_grid.add(txtextra2);
+
+        JPanel p_mat_botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 3));
+        JButton btnFiltrarNivel = new JButton("Filtrar Nivel");
+        JButton btnAddLibro = new JButton("+ Libro");
+        JButton btnAddRevista = new JButton("+ Revista");
+        JButton btnAddAudio = new JButton("+ Audio");
+        JButton btnVerMaterial = new JButton("Buscar/Ver");
+        p_mat_botones.add(btnFiltrarNivel);
+        p_mat_botones.add(btnAddLibro);
+        p_mat_botones.add(btnAddRevista);
+        p_mat_botones.add(btnAddAudio);
+        p_mat_botones.add(btnVerMaterial);
+
+        p_material.add(p_mat_grid, BorderLayout.CENTER);
+        p_material.add(p_mat_botones, BorderLayout.SOUTH);
+
+        // 2. Panel Usuario
+        JPanel p_usuario = new JPanel(new BorderLayout(4, 4));
         p_usuario.setBorder(BorderFactory.createTitledBorder("Alta de Usuarios"));
-        txtuserid=new JTextField();
-        txtusernombre=new JTextField();
-        JPanel p_btnuser=new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
-        JButton btnuserEst=new JButton("+ Estandar");
-        JButton btnuserPrem=new JButton("+ Premium");
-        p_btnuser.add(btnuserEst);
-        p_btnuser.add(btnuserPrem);
-        p_usuario.add(new JLabel("ID del Usuario:"));
-        p_usuario.add(txtuserid);
-        p_usuario.add(new JLabel("Nombre:"));
-        p_usuario.add(txtusernombre);
-        p_usuario.add(new JLabel("Registrar:"));
-        p_usuario.add(p_btnuser);
-        
-        
-        
-        
-        
-        JPanel p_operations=new JPanel(new GridLayout(5,2,3,3));
-        p_operations.setBorder(BorderFactory.createTitledBorder("Operaciones y Simulacion"));
-        txtopuser=new JTextField();
-        txtopmat=new JTextField();
-        txtdias=new JTextField("0");
-        
-        
-        JPanel p_btnoperations=new JPanel(new FlowLayout(FlowLayout.CENTER,2,2));
-        JButton btnconsult=new JButton("Penalizacion");
-        JButton btnPrestar=new JButton("Prestar");
-        JButton btnDevolver=new JButton("Devolver");
-        JButton btnReservar=new JButton("Reservar");
-        p_btnoperations.add(btnPrestar);
-        p_btnoperations.add(btnDevolver);
-        p_btnoperations.add(btnReservar);
-        p_btnoperations.add(btnconsult);
-        
-        
-        
-        
-        JPanel p_btnReport=new JPanel(new FlowLayout(FlowLayout.CENTER,2,2));
-        JButton btnReporte=new JButton("Reporte de Materiales");
-        p_btnReport.add(btnReporte);
-        
-       
-        
-        
-        p_operations.add(new JLabel("ID Usuario Op:"));
-        p_operations.add(txtopuser);
-        p_operations.add(new JLabel("Cod Material Op:"));
-        p_operations.add(txtopmat);
-        p_operations.add(new JLabel("Simular Dias (+N):"));
-        p_operations.add(txtdias);
-        p_operations.add(new JLabel("Ejecutar:"));
-        p_operations.add(p_btnoperations);
-        p_operations.add(new JLabel("Reportes:"));
-        p_operations.add(p_btnReport);
-        
-        
-        
-        
-        
+
+        JPanel p_user_grid = new JPanel(new GridLayout(2, 2, 4, 4));
+        txtuserid = new JTextField();
+        txtusernombre = new JTextField();
+        p_user_grid.add(new JLabel(" ID del Usuario:"));
+        p_user_grid.add(txtuserid);
+        p_user_grid.add(new JLabel(" Nombre:"));
+        p_user_grid.add(txtusernombre);
+
+        JPanel p_user_botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 3));
+        JButton btnuserEst = new JButton("+ Usuario Estándar");
+        JButton btnuserPrem = new JButton("+ Usuario Premium");
+        p_user_botones.add(btnuserEst);
+        p_user_botones.add(btnuserPrem);
+
+        p_usuario.add(p_user_grid, BorderLayout.CENTER);
+        p_usuario.add(p_user_botones, BorderLayout.SOUTH);
+
+        // 3. Panel Operaciones y Reportes
+        JPanel p_operations = new JPanel(new BorderLayout(4, 4));
+        p_operations.setBorder(BorderFactory.createTitledBorder("Operaciones, Simulación y Seguimiento"));
+
+        JPanel p_op_grid = new JPanel(new GridLayout(3, 2, 4, 4));
+        txtopuser = new JTextField();
+        txtopmat = new JTextField();
+        txtdias = new JTextField("0");
+        p_op_grid.add(new JLabel(" ID Usuario Op:"));
+        p_op_grid.add(txtopuser);
+        p_op_grid.add(new JLabel(" Cód Material Op:"));
+        p_op_grid.add(txtopmat);
+        p_op_grid.add(new JLabel(" Simular Días (+N):"));
+        p_op_grid.add(txtdias);
+
+        JPanel p_op_botones_contenedor = new JPanel(new GridLayout(2, 1, 3, 3));
+        JPanel p_btn_fila1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 2));
+        JButton btnPrestar = new JButton("Prestar");
+        JButton btnDevolver = new JButton("Devolver");
+        JButton btnReservar = new JButton("Reservar");
+        JButton btnconsult = new JButton("Penalización");
+        p_btn_fila1.add(btnPrestar);
+        p_btn_fila1.add(btnDevolver);
+        p_btn_fila1.add(btnReservar);
+        p_btn_fila1.add(btnconsult);
+
+        JPanel p_btn_fila2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 2));
+        JButton btnReporte = new JButton("Polimorfismo");
+        JButton btnProximos = new JButton("Próx. a Vencer");
+        JButton btnVencidos = new JButton("Préstamos Vencidos");
+        p_btn_fila2.add(btnReporte);
+        p_btn_fila2.add(btnProximos);
+        p_btn_fila2.add(btnVencidos);
+
+        p_op_botones_contenedor.add(p_btn_fila1);
+        p_op_botones_contenedor.add(p_btn_fila2);
+
+        p_operations.add(p_op_grid, BorderLayout.CENTER);
+        p_operations.add(p_op_botones_contenedor, BorderLayout.SOUTH);
+
         panel_izq.add(p_material);
         panel_izq.add(p_usuario);
         panel_izq.add(p_operations);
+
+        // ================= PANEL DERECHO (VISTA DE PORTADA Y CONSOLA) =================
+        JPanel panel_der = new JPanel(new BorderLayout(6, 6));
+        panel_der.setBorder(BorderFactory.createEmptyBorder(6, 0, 6, 6));
+
+        // Tarjeta visual compacta de la portada
+        JPanel p_visual = new JPanel(new BorderLayout(4, 4));
+        p_visual.setBorder(BorderFactory.createTitledBorder("Detalle del Material Seleccionado"));
         
-        
-        
-        
-        JPanel panel_der=new JPanel(new BorderLayout(5, 5));
-        panel_der.setBorder(BorderFactory.createTitledBorder("Vista de Material y Resultados"));
-        JPanel p_visual=new JPanel(new BorderLayout(5, 5));
-        lblcomp=new JLabel("COMPLEJIDAD", SwingConstants.CENTER);
+        lblcomp = new JLabel("COMPLEJIDAD", SwingConstants.CENTER);
         lblcomp.setOpaque(true);
         lblcomp.setBackground(Color.LIGHT_GRAY);
-        lblcomp.setFont(new Font("SansSerif",Font.BOLD,12));
-        lblcomp.setPreferredSize(new Dimension(0,25));
-        lblimg=new JLabel("Sin Imagen", SwingConstants.CENTER);
-        lblimg.setPreferredSize(new Dimension(160, 160));
-        lblimg.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        lblcomp.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lblcomp.setPreferredSize(new Dimension(0, 24));
+        
+        lblimg = new JLabel("Sin Portada Seleccionada", SwingConstants.CENTER);
+        lblimg.setPreferredSize(new Dimension(140, 160));
+        lblimg.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
         p_visual.add(lblcomp, BorderLayout.NORTH);
         p_visual.add(lblimg, BorderLayout.CENTER);
+
+        // Consola de texto inferior
         txtConsola = new JTextArea();
         txtConsola.setEditable(false);
         txtConsola.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JScrollPane scrollConsola = new JScrollPane(txtConsola);
+        scrollConsola.setBorder(BorderFactory.createTitledBorder("Consola de Resultados"));
+
         panel_der.add(p_visual, BorderLayout.NORTH);
-        panel_der.add(new JScrollPane(txtConsola), BorderLayout.CENTER);
+        panel_der.add(scrollConsola, BorderLayout.CENTER);
+
         add(panel_izq, BorderLayout.WEST);
         add(panel_der, BorderLayout.CENTER);
-        
-        
-        
-        //actionlistener para TODOS LOS BOTONES
-        
-        
-        
+
+        // ================= EVENTOS DE LOS BOTONES =================
+
         btnAddLibro.addActionListener(e -> {
             try {
                 NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
-                String[] datos= txtextra2.getText().split(",");
-                
-                int pagina=(datos.length > 0 && !datos[0].trim().isEmpty() ? Integer.parseInt(datos[0].trim()) : 100);
-                String ISBN=(datos.length > 1 ? datos[1].trim() : "SIN-ISBN");
-                MaterialBibliografico m = new Libro(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), txtextra1.getText().trim(),pagina,ISBN);
-                
+                String[] datos = txtextra2.getText().split(",");
+                int pagina = (datos.length > 0 && !datos[0].trim().isEmpty() ? Integer.parseInt(datos[0].trim()) : 100);
+                String ISBN = (datos.length > 1 ? datos[1].trim() : "SIN-ISBN");
+                MaterialBibliografico m = new Libro(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), txtextra1.getText().trim(), pagina, ISBN);
+
                 service.registrarMaterial(m);
-                txtConsola.setText("Libro registrado con exito: "+m.getTitulo());
-                
+                cargarVisualMaterial(m);
+                txtConsola.setText("Libro registrado con éxito:\n" + m.obtenerDescripcion());
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
-        
+
         btnAddRevista.addActionListener(e -> {
             try {
                 NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
                 int edicion = Integer.parseInt(txtextra1.getText().trim());
                 MaterialBibliografico m = new Revista(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), edicion, txtextra2.getText().trim());
                 service.registrarMaterial(m);
-                
-                txtConsola.setText("Revista registrada con exito: "+m.getTitulo());
+                cargarVisualMaterial(m);
+                txtConsola.setText("Revista registrada con éxito:\n" + m.obtenerDescripcion());
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
-        
+
         btnAddAudio.addActionListener(e -> {
             try {
                 NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
                 int duracion = Integer.parseInt(txtextra1.getText().trim());
                 MaterialBibliografico m = new Audiovisual(txtcode.getText().trim(), txtTitle.getText().trim(), nivel, txtimg.getText().trim(), duracion, txtextra2.getText().trim());
                 service.registrarMaterial(m);
-                txtConsola.setText("Material Audiovisual registrado con exito: "+m.getTitulo());
+                cargarVisualMaterial(m);
+                txtConsola.setText("Material Audiovisual registrado con éxito:\n" + m.obtenerDescripcion());
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
-        
+
         btnuserEst.addActionListener(e -> {
             try {
-                Usuario user=new UsuarioEstandar(txtuserid.getText().trim(), txtusernombre.getText().trim());
+                Usuario user = new UsuarioEstandar(txtuserid.getText().trim(), txtusernombre.getText().trim());
                 service.registrarUsuario(user);
-                txtConsola.setText("Usuario Estandar registrado: "+user.getNombre());
+                txtConsola.setText("Usuario Estándar registrado:\n" + user.getNombre() + " (Límite: " + user.getLimitePrestamos() + " préstamos)");
             } catch (Exception ex) {
                 mostrarError(ex);
             }
@@ -248,23 +252,24 @@ public class GUIBiblioteca extends JFrame{
 
         btnuserPrem.addActionListener(e -> {
             try {
-                Usuario user=new UsuarioPremium(txtuserid.getText().trim(), txtusernombre.getText().trim());
+                Usuario user = new UsuarioPremium(txtuserid.getText().trim(), txtusernombre.getText().trim());
                 service.registrarUsuario(user);
-                txtConsola.setText("Usuario Premium registrado: "+user.getNombre());
+                txtConsola.setText("Usuario Premium registrado:\n" + user.getNombre() + " (Límite: " + user.getLimitePrestamos() + " préstamos)");
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
-        
+
         btnPrestar.addActionListener(e -> {
             try {
                 Calendar fecha = obtenerFechaSimulada();
-                Prestamo p = service.prestarMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha.getTime());
-                txtConsola.setText("PRESTAMO EXITOSO:\n"
-                        + "Usuario: "+p.getUsuario().getNombre() + "\n"
-                        + "Material: "+p.getMaterial().getTitulo() + "\n"
-                        + "Fecha de prestamo: "+formatearFecha(p.getFechaPrestamo()) + "\n"
-                        + "Fecha prevista devolucion: "+formatearFecha(p.getFechaPrevistaDev()));
+                Prestamo p = service.prestarMaterial(txtopmat.getText().trim(), txtopuser.getText().trim(), fecha.getTime());
+                cargarVisualMaterial(p.getMaterial());
+                txtConsola.setText("=== PRÉSTAMO EXITOSO ===\n"
+                        + "Usuario: " + p.getUsuario().getNombre() + "\n"
+                        + "Material: " + p.getMaterial().getTitulo() + "\n"
+                        + "Fecha de Préstamo: " + formatearFecha(p.getFechaPrestamo()) + "\n"
+                        + "Fecha Prevista Devolución: " + formatearFecha(p.getFechaPrevistaDev()));
             } catch (Exception ex) {
                 mostrarError(ex);
             }
@@ -273,26 +278,22 @@ public class GUIBiblioteca extends JFrame{
         btnDevolver.addActionListener(e -> {
             try {
                 Calendar fecha = obtenerFechaSimulada();
-                service.devolverMaterial(txtopuser.getText().trim(),fecha.getTime());
-                txtConsola.setText("Devolucion efectuada correctamente en fecha: "+formatearFecha(fecha.getTime()));
+                service.devolverMaterial(txtopmat.getText().trim(), fecha.getTime());
+                txtConsola.setText("Devolución efectuada correctamente en fecha: " + formatearFecha(fecha.getTime()));
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
 
-        
         btnReservar.addActionListener(e -> {
             try {
-                service.reservarMaterial(txtopuser.getText().trim(), txtopmat.getText().trim());
-                txtConsola.setText("Material reservado exitosamente para el usuario "+txtopuser.getText().trim());
+                service.reservarMaterial(txtopmat.getText().trim(), txtopuser.getText().trim());
+                txtConsola.setText("Material reservado en cola para el usuario: " + txtopuser.getText().trim());
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
-        
-        
-        
-        
+
         btnVerMaterial.addActionListener(e -> {
             MaterialBibliografico m = service.buscarMaterialExacto(txtcode.getText().trim(), 0);
             if (m == null && !txtTitle.getText().trim().isEmpty()) {
@@ -300,158 +301,152 @@ public class GUIBiblioteca extends JFrame{
             }
             if (m != null) {
                 cargarVisualMaterial(m);
-                txtConsola.setText("=== MATERIAL ENCONTRADO ===\n"
-                        + "Codigo: "+m.getCodigo()+"\n"
-                        + "Titulo: "+m.getTitulo()+"\n"
-                        + "Nivel Complejidad: "+m.getNivelComplejidad().name()+"\n"
-                        + "Estado: "+m.getEstado()+"\n"
-                        + "Dias de Prestamo Calculados: "+m.calcularDiasPrestamo()+"\n"
-                        + "Descripcion: " + m.obtenerDescripcion()+"\n"
-                        + "Tiene reservas pendientes: "+(m.tieneReservasPendientes() ? "SI" : "NO"));
-            } 
-         else {
-                JOptionPane.showMessageDialog(this, "Material no encontrado.", "Busqueda", JOptionPane.INFORMATION_MESSAGE);
+                txtConsola.setText("=== MATERIAL ENCONTRADO (RECURSIVO) ===\n"
+                        + "Código: " + m.getCodigo() + "\n"
+                        + "Título: " + m.getTitulo() + "\n"
+                        + "Nivel Complejidad: " + m.getNivelComplejidad().name() + " (" + m.getNivelComplejidad().getDescripcion() + ")\n"
+                        + "Estado: " + m.getEstado() + "\n"
+                        + "Días de Préstamo Calculados: " + m.calcularDiasPrestamo() + " días\n"
+                        + "Descripción: " + m.obtenerDescripcion() + "\n"
+                        + "¿Tiene reservas pendientes?: " + (m.tieneReservasPendientes() ? "SÍ" : "NO"));
+            } else {
+                JOptionPane.showMessageDialog(this, "Material no encontrado.", "Búsqueda", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        
-        
-        
+
         btnReporte.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("=== POLIMORFISMO REAL EN MATERIALES ===\n");
+            StringBuilder sb = new StringBuilder("=== POLIMORFISMO REAL EN MATERIALES ===\n\n");
             for (Prestable prestable : service.getMateriales()) {
                 MaterialBibliografico m = (MaterialBibliografico) prestable;
-                sb.append("[").append(m.getClass().getSimpleName()).append("] ").append(m.getTitulo()).append(" -> ").append(m.obtenerDescripcion()).append(" | Dias prestamo: ").append(m.calcularDiasPrestamo()).append("\n");
+                sb.append("[").append(m.getClass().getSimpleName()).append("] ").append(m.getTitulo())
+                        .append("\n  -> ").append(m.obtenerDescripcion())
+                        .append("\n  -> Días Calculados: ").append(m.calcularDiasPrestamo()).append(" días\n\n");
             }
-            sb.append("\n=== FILTRO GENERICO (Solo Libros) ===\n");
+            sb.append("=== FILTRO GENÉRICO (Solo Libros) ===\n");
             List<Libro> soloLibros = service.filtrarPorTipo(Libro.class);
             for (Libro l : soloLibros) {
-                sb.append("- ").append(l.getTitulo()).append(" (Autor: ").append(l.getAutor()).append(")\n");
+                sb.append("• ").append(l.getTitulo()).append(" (Autor: ").append(l.getAutor()).append(")\n");
             }
             txtConsola.setText(sb.toString());
         });
-        
+
         btnconsult.addActionListener(e -> {
             try {
                 Calendar fecha = obtenerFechaSimulada();
                 Usuario u = service.buscarUsuarioPorId(txtopuser.getText().trim());
-                if (u==null) {
+                if (u == null) {
                     JOptionPane.showMessageDialog(this, "Usuario no encontrado.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
-                long diasRetraso= service.calcularDiasPenalizacionRecursivo(u.getHistorialPrestamo(), 0, fecha.getTime());
-                boolean penalizado= u.estaPenalizado(fecha.getTime());
-                txtConsola.setText("=== ESTADO DE PENALIZACION ===\n"
-                        +"Usuario: "+u.getNombre()+" (" + u.getId()+")\n"
-                        +"Esta penalizado hoy?: "+(penalizado ? "SI" : "NO")+"\n"
-                        +"Dias de retraso historicos (Calculo Recursivo): "+diasRetraso);
+                long diasRetraso = service.calcularDiasPenalizacionRecursivo(u.getHistorialPrestamo(), 0, fecha.getTime());
+                boolean penalizado = u.estaPenalizado(fecha.getTime());
+                txtConsola.setText("=== ESTADO DE PENALIZACIÓN (RECURSIVO) ===\n"
+                        + "Usuario: " + u.getNombre() + " (" + u.getId() + ")\n"
+                        + "¿Está penalizado hoy?: " + (penalizado ? "SÍ (Hasta " + formatearFecha(u.getFinPenalizacion()) + ")" : "NO") + "\n"
+                        + "Días de retraso acumulados: " + diasRetraso + " días\n"
+                        + "Sanción total acumulada: " + (diasRetraso * 2) + " días");
             } catch (Exception ex) {
                 mostrarError(ex);
             }
         });
-        
+
         btnFiltrarNivel.addActionListener(e -> {
             try {
                 NivelComplejidad nivel = NivelComplejidad.valueOf(txtnivel.getText().trim().toUpperCase());
-                List<MaterialBibliografico> lista = service.buscarMaterialFlexible(nivel, 0, new java.util.ArrayList<>());
-                StringBuilder sb=new StringBuilder("==MATERIALES DE NIVEL " + nivel.name()+" ==\n");
+                List<MaterialBibliografico> lista = service.buscarMaterialFlexible(nivel, 0, new ArrayList<>());
+                StringBuilder sb = new StringBuilder("=== MATERIALES NIVEL " + nivel.name() + " (RECURSIVO) ===\n\n");
                 for (MaterialBibliografico m : lista) {
-                    sb.append("[").append(m.getCodigo()).append("] ").append(m.getTitulo()).append(" - Estado: ").append(m.getEstado()).append("\n");
+                    sb.append("• [").append(m.getCodigo()).append("] ").append(m.getTitulo())
+                      .append(" (").append(m.getClass().getSimpleName()).append(") - Estado: ").append(m.getEstado()).append("\n");
                 }
-                if (lista.isEmpty()) sb.append("No hay materiales con ese nivel.");
+                if (lista.isEmpty()) sb.append("No hay materiales registrados con ese nivel.");
                 txtConsola.setText(sb.toString());
             } catch (Exception ex) {
                 mostrarError(ex);
             }
-        });
+        });      
     }
-    
-    
-    
-    
-    private String formatearFecha(java.util.Date d) {
-        if (d==null){
-            return "";
-        }
+
+    private String formatearFecha(Date d) {
+        if (d == null) return "";
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
-        int dia= cal.get(Calendar.DAY_OF_MONTH);
-        int mes= cal.get(Calendar.MONTH)+1;
-        int anio= cal.get(Calendar.YEAR);
-        return dia+"/"+mes+"/"+anio;
+        int dia = cal.get(Calendar.DAY_OF_MONTH);
+        int mes = cal.get(Calendar.MONTH) + 1;
+        int anio = cal.get(Calendar.YEAR);
+        return String.format("%02d/%02d/%04d", dia, mes, anio);
     }
 
     private Calendar obtenerFechaSimulada() {
-        Calendar cal= Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         try {
             int offset = Integer.parseInt(txtdias.getText().trim());
-            cal.add(Calendar.DAY_OF_YEAR,offset);
-        } 
-        catch (NumberFormatException ignored){}
-        
+            cal.add(Calendar.DAY_OF_YEAR, offset);
+        } catch (NumberFormatException ignored) {}
         return cal;
     }
-    
+
+    // CARGA DE IMAGEN PROPORCIONADA Y COMPATIBLE CON JAVA 8
     private void cargarVisualMaterial(MaterialBibliografico m) {
-        switch (m.getNivelComplejidad()) {
-            case BAJO:
-                lblcomp.setBackground(new Color(144,238,144));
-                lblcomp.setForeground(Color.BLACK);
-                break;
-            case MEDIO:
-                lblcomp.setBackground(new Color(255,215,0));
-                lblcomp.setForeground(Color.BLACK);
-                break;
-            case ALTO:
-                lblcomp.setBackground(new Color(230,80,80));
-                lblcomp.setForeground(Color.WHITE);
-                break;
+        if (m == null) return;
+
+        // Configuración de colores compatible con Java 8
+        if (m.getNivelComplejidad() == NivelComplejidad.BAJO) {
+            lblcomp.setBackground(new Color(170, 240, 170));
+            lblcomp.setForeground(Color.BLACK);
+        } else if (m.getNivelComplejidad() == NivelComplejidad.MEDIO) {
+            lblcomp.setBackground(new Color(255, 225, 130));
+            lblcomp.setForeground(Color.BLACK);
+        } else if (m.getNivelComplejidad() == NivelComplejidad.ALTO) {
+            lblcomp.setBackground(new Color(240, 110, 110));
+            lblcomp.setForeground(Color.WHITE);
         }
-        
+
         lblcomp.setText("COMPLEJIDAD: " + m.getNivelComplejidad().name());
 
-        String ruta=m.getRutaImagen();
+        String ruta = m.getRutaImagen();
+        Image img = null;
+
         if (ruta != null && !ruta.trim().isEmpty()) {
-            java.io.File f = new java.io.File(ruta);
-            if (f.exists() && !f.isDirectory()) {
-                ImageIcon icon = new ImageIcon(ruta);
-                Image img = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-                lblimg.setIcon(new ImageIcon(img));
-                lblimg.setText("");
-                return;
+            File fDirect = new File(ruta);
+            if (fDirect.exists() && fDirect.isFile()) {
+                img = new ImageIcon(fDirect.getAbsolutePath()).getImage();
+            } else {
+                File fSrc = new File("src/" + ruta);
+                if (fSrc.exists() && fSrc.isFile()) {
+                    img = new ImageIcon(fSrc.getAbsolutePath()).getImage();
+                } else {
+                    URL url = getClass().getClassLoader().getResource(ruta);
+                    if (url != null) {
+                        img = new ImageIcon(url).getImage();
+                    }
+                }
             }
         }
-        java.io.File fallback=new java.io.File("imagenes/no_image.png");
-        if (fallback.exists()) {
-            ImageIcon icon=new ImageIcon(fallback.getAbsolutePath());
-            Image img=icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-            lblimg.setIcon(new ImageIcon(img));
+
+        if (img != null) {
+            Image scaled = img.getScaledInstance(130, 160, Image.SCALE_SMOOTH);
+            lblimg.setIcon(new ImageIcon(scaled));
             lblimg.setText("");
         } else {
             lblimg.setIcon(null);
-            lblimg.setText("Sin Portada");
+            lblimg.setText("<html><center><b>[Sin Portada]</b><br><small>(" + (ruta != null ? ruta : "N/A") + ")</small></center></html>");
         }
     }
 
-    
     private void mostrarError(Exception ex) {
         if (ex instanceof MaterialNoDisponibleException) {
-            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Material No Disponible", JOptionPane.WARNING_MESSAGE);
-        } 
-        else if (ex instanceof LimitePrestamosSuperadoException) {
-            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Limite Superado", JOptionPane.WARNING_MESSAGE);
-        } 
-        else if (ex instanceof AccesoNoAutorizadoException) {
-            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Acceso No Autorizado", JOptionPane.WARNING_MESSAGE);
-        } 
-        else if (ex instanceof UsuarioPenalizadoException) {
-            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Usuario Penalizado", JOptionPane.WARNING_MESSAGE);
-        } 
-        else if (ex instanceof BibliotecaException) {
-            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error de Biblioteca", JOptionPane.ERROR_MESSAGE);
-        } 
-        else {
-            JOptionPane.showMessageDialog(this,"Datos invalidos o incompletos: "+ex.getMessage(), "Error General", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error: Material No Disponible", JOptionPane.WARNING_MESSAGE);
+        } else if (ex instanceof LimitePrestamosSuperadoException) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error: Límite Superado", JOptionPane.WARNING_MESSAGE);
+        } else if (ex instanceof AccesoNoAutorizadoException) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error: Acceso No Autorizado", JOptionPane.WARNING_MESSAGE);
+        } else if (ex instanceof UsuarioPenalizadoException) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error: Usuario Penalizado", JOptionPane.WARNING_MESSAGE);
+        } else if (ex instanceof BibliotecaException) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Biblioteca", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Datos inválidos o incompletos: " + ex.getMessage(), "Error General", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
 }
