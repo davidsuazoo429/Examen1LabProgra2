@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -230,8 +231,31 @@ public class GUIBiblioteca extends JFrame{
                 mostrarError(ex);
             }
         });
+        
+        
+        
     }
     
     
+    private void mostrarError(Exception ex) {
+        if (ex instanceof MaterialNoDisponibleException) {
+            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Material No Disponible", JOptionPane.WARNING_MESSAGE);
+        } 
+        else if (ex instanceof LimitePrestamosSuperadoException) {
+            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Limite Superado", JOptionPane.WARNING_MESSAGE);
+        } 
+        else if (ex instanceof AccesoNoAutorizadoException) {
+            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Acceso No Autorizado", JOptionPane.WARNING_MESSAGE);
+        } 
+        else if (ex instanceof UsuarioPenalizadoException) {
+            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error: Usuario Penalizado", JOptionPane.WARNING_MESSAGE);
+        } 
+        else if (ex instanceof BibliotecaException) {
+            JOptionPane.showMessageDialog(this,ex.getMessage(),"Error de Biblioteca", JOptionPane.ERROR_MESSAGE);
+        } 
+        else {
+            JOptionPane.showMessageDialog(this,"Datos invalidos o incompletos: "+ex.getMessage(), "Error General", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
 }
