@@ -31,12 +31,12 @@ import javax.swing.SwingConstants;
  * @author Ian Suazo Palao
  */
 public class GUIBiblioteca extends JFrame{
-    private final Service service;
+    private final BibliotecaServicio service;
     private JTextField txtcode, txtTitle, txtnivel,txtimg,txtextra1,txtextra2,txtuserid,txtusernombre,txtopuser,txtopmat,txtdias;
     private JLabel lblimg, lblcomp;
     private JTextArea txtConsola;
 
-    public GUIBiblioteca(Service service) {
+    public GUIBiblioteca(BibliotecaServicio service) {
         this.service = service;
         setTitle("Sistema de Biblioteca: Panel Principal");
         setSize(950, 650);
@@ -138,11 +138,7 @@ public class GUIBiblioteca extends JFrame{
         
         
         JPanel p_btnReport=new JPanel(new FlowLayout(FlowLayout.CENTER,2,2));
-        JButton btnProximos=new JButton("Proximos a Vencer");
-        JButton btnVen=new JButton("Vencidos");
         JButton btnReporte=new JButton("Reporte de Materiales");
-        p_btnReport.add(btnProximos);
-        p_btnReport.add(btnVen);
         p_btnReport.add(btnReporte);
         
        
@@ -317,36 +313,6 @@ public class GUIBiblioteca extends JFrame{
                 JOptionPane.showMessageDialog(this, "Material no encontrado.", "Busqueda", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        
-        
-        
-        btnProximos.addActionListener(e -> {
-            Calendar fecha = obtenerFechaSimulada();
-            List<Prestamo> lista = service.obtenerProximosAVencer(fecha.getTime(), 3);
-            StringBuilder sb = new StringBuilder("=== PROXIMOS A VENCER (Margen 3 dias desde "+formatearFecha(fecha.getTime())+") ===\n");
-            for (Prestamo p : lista) {
-                sb.append("- Material: ").append(p.getMaterial().getTitulo()).append(" | Usuario: ").append(p.getUsuario().getNombre()).append(" | Vence: ").append(formatearFecha(p.getFechaPrevistaDev())).append("\n");
-            }
-            if (lista.isEmpty()) sb.append("No hay prestamos proximos a vencer.");
-            txtConsola.setText(sb.toString());
-        });
-        
-        
-        
-        
-        btnVen.addActionListener(e -> {
-            Calendar fecha = obtenerFechaSimulada();
-            List<Prestamo> lista = service.obtenerPendientesPenalizacion(fecha.getTime());
-            StringBuilder sb = new StringBuilder("=== PRESTAMOS VENCIDOS / PENDIENTES DE PENALIZACION (Ref: "+formatearFecha(fecha.getTime())+") ===\n");
-            for (Prestamo p : lista) {
-                sb.append("- Material: ").append(p.getMaterial().getTitulo()).append(" | Usuario: ").append(p.getUsuario().getNombre()).append(" | Vencio: ").append(formatearFecha(p.getFechaPrevistaDev())).append(" | Dias Retraso: ").append(p.CalcularDiasRetraso(fecha.getTime())).append("\n");
-            }
-            if (lista.isEmpty()){
-                sb.append("No hay prestamos vencidos pendientes.");
-            }
-            txtConsola.setText(sb.toString());
-        });
-        
         
         
         
