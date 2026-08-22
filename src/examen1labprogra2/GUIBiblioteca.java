@@ -273,8 +273,8 @@ public class GUIBiblioteca extends JFrame{
         btnDevolver.addActionListener(e -> {
             try {
                 Calendar fecha = obtenerFechaSimulada();
-                service.devolverMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha);
-                txtConsola.setText("Devolucion efectuada correctamente en fecha: " + formatearFecha(fecha));
+                service.devolverMaterial(txtopuser.getText().trim(), txtopmat.getText().trim(), fecha.getTime());
+                txtConsola.setText("Devolucion efectuada correctamente en fecha: "+formatearFecha(fecha.getTime()));
             } catch (Exception ex) {
                 mostrarError(ex);
             }
@@ -303,12 +303,13 @@ public class GUIBiblioteca extends JFrame{
                 txtConsola.setText("=== MATERIAL ENCONTRADO ===\n"
                         + "Codigo: "+m.getCodigo()+"\n"
                         + "Titulo: "+m.getTitulo()+"\n"
-                        + "Nivel Complejidad: "+m.getNivelComplejidad().name()+" (+"+m.getNivelComplejidad().getDiasExtra()+" dias)\n"
-                        + "Estado: "+m.getEstado() + "\n"
+                        + "Nivel Complejidad: "+m.getNivelComplejidad().name()+"\n"
+                        + "Estado: "+m.getEstado()+"\n"
                         + "Dias de Prestamo Calculados: "+m.calcularDiasPrestamo()+"\n"
                         + "Descripcion: " + m.obtenerDescripcion()+"\n"
                         + "Tiene reservas pendientes: "+(m.tieneReservasPendientes() ? "SI" : "NO"));
-            } else {
+            } 
+            else {
                 JOptionPane.showMessageDialog(this, "Material no encontrado.", "Busqueda", JOptionPane.INFORMATION_MESSAGE);
             }
         });
