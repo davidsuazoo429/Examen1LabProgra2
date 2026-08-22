@@ -191,6 +191,31 @@ public class BibliotecaServicio {
     }
     
     private void cargarDatosPrueba(){
+        usuarios.add(new UsuarioEstandar("U1", "Carlos Carlos"));
+        usuarios.add(new UsuarioPremium("U2", "Ian Suazo"));
+        usuarios.add(new UsuarioEstandar("U3", "David Suazo"));
+        usuarios.add(new UsuarioPremium( "U4", "Fernando Altamirano"));
         
+        // === 2. LIBROS ===
+        catalogo.add(new Libro("La Divina Comedia", "LIB-001", NivelComplejidad.ALTO, "portadas/divinacomedia.jpg", "Dante Alighieri", 580, "978-8420665481"));
+        catalogo.add(new Libro("La Odisea", "LIB-002", NivelComplejidad.MEDIO, "portadas/odisea.jpg", "Homero", 448, "978-8420674209"));
+        catalogo.add(new Libro("La Ilíada", "LIB-003", NivelComplejidad.ALTO, "portadas/iliada.jpg", "Homero", 560, "978-8420674193"));
+        catalogo.add(new Libro("El Corazón Delator", "LIB-004", NivelComplejidad.BAJO, "portadas/corazondelator.jpg", "Edgar Allan Poe", 64, "978-8415618751"));
+        catalogo.add(new Libro("La Caída de la Casa Usher", "LIB-005", NivelComplejidad.BAJO, "portadas/casausher.jpg", "Edgar Allan Poe", 80, "978-8415618768"));
+        catalogo.add(new Libro("Harry Potter y la Piedra Filosofal", "LIB-006", NivelComplejidad.BAJO, "portadas/harrypotter.jpg", "J.K. Rowling", 288, "978-8478884452"));
+
+        // === 3. REVISTAS ===
+        catalogo.add(new Revista("National Geographic", "REV-001", NivelComplejidad.BAJO, "portadas/natgeo.jpg", 245, Periodicidad.MENSUAL));
+        catalogo.add(new Revista("Time", "REV-002", NivelComplejidad.MEDIO, "portadas/time.jpg", 1050, Periodicidad.SEMANAL));
+        catalogo.add(new Revista("Cosmopolitan", "REV-003", NivelComplejidad.BAJO, "portadas/cosmopolitan.jpg", 312, Periodicidad.MENSUAL));
+        catalogo.add(new Revista("People Magazine", "REV-004", NivelComplejidad.BAJO, "portadas/people.jpg", 520, Periodicidad.SEMANAL));
+        catalogo.add(new Revista("The Lancet", "REV-005", NivelComplejidad.ALTO, "portadas/thelancet.jpg", 884, Periodicidad.SEMANAL));
+
+        // === 4. MATERIAL AUDIOVISUAL ===
+        catalogo.add(new Audiovisual("Interstellar", "MED-001", NivelComplejidad.ALTO, "portadas/interstellar.jpg", 169, FormatoAudiovisual.BLURAY));
+        catalogo.add(new Audiovisual("Spiderman 2", "MED-002", NivelComplejidad.BAJO, "portadas/spiderman2.jpg", 127, FormatoAudiovisual.DVD));
+        catalogo.add(new Audiovisual("The Lion King", "MED-003", NivelComplejidad.BAJO, "portadas/lionking.jpg", 88, FormatoAudiovisual.DVD));
+        catalogo.add(new Audiovisual("Avatar", "MED-004", NivelComplejidad.MEDIO, "portadas/avatar.jpg", 162, FormatoAudiovisual.BLURAY));
+        catalogo.add(new Audiovisual("La La Land", "MED-005", NivelComplejidad.MEDIO, "portadas/lalaland.jpg", 128, FormatoAudiovisual.BLURAY));
     }
 }
