@@ -95,10 +95,64 @@ public class GUIBiblioteca extends JFrame{
         JButton btnuserPrem=new JButton("+ Premium");
         p_btnuser.add(btnuserEst);
         p_btnuser.add(btnuserPrem);
+        p_usuario.add(new JLabel("ID del Usuario:"));
+        p_usuario.add(txtuserid);
+        p_usuario.add(new JLabel("Nombre:"));
+        p_usuario.add(txtusernombre);
+        p_usuario.add(new JLabel("Registrar:"));
+        p_usuario.add(p_btnuser);
         
         
         
         
+        
+        JPanel p_operations=new JPanel(new GridLayout(5,2,3,3));
+        p_operations.setBorder(BorderFactory.createTitledBorder("Operaciones y Simulacion"));
+        txtopuser=new JTextField();
+        txtopmat=new JTextField();
+        txtdias=new JTextField("0");
+        
+        
+        JPanel p_btnoperations=new JPanel(new FlowLayout(FlowLayout.CENTER,2,2));
+        JButton btnPrestar=new JButton("Prestar");
+        JButton btnDevolver=new JButton("Devolver");
+        JButton btnReservar=new JButton("Reservar");
+        p_btnoperations.add(btnPrestar);
+        p_btnoperations.add(btnDevolver);
+        p_btnoperations.add(btnReservar);
+        
+        
+        
+        
+        JPanel p_btnReport=new JPanel(new FlowLayout(FlowLayout.CENTER,2,2));
+        JButton btnProximos=new JButton("Proximos a Vencer");
+        JButton btnVen=new JButton("Vencidos");
+        JButton btnReporte=new JButton("Reporte de Materiales");
+        p_btnReport.add(btnProximos);
+        p_btnReport.add(btnVen);
+        p_btnReport.add(btnReporte);
+        
+       
+        
+        
+        p_operations.add(new JLabel("ID Usuario Op:"));
+        p_operations.add(txtopuser);
+        p_operations.add(new JLabel("Cod Material Op:"));
+        p_operations.add(txtopmat);
+        p_operations.add(new JLabel("Simular Dias (+N):"));
+        p_operations.add(txtdias);
+        p_operations.add(new JLabel("Ejecutar:"));
+        p_operations.add(p_btnoperations);
+        p_operations.add(new JLabel("Reportes:"));
+        p_operations.add(p_btnReport);
+        
+        
+        
+        
+        
+        panel_izq.add(p_material);
+        panel_izq.add(p_usuario);
+        panel_izq.add(p_operations);
     }
     
     
